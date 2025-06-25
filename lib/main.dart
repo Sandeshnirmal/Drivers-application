@@ -50,15 +50,6 @@ class _LoginPageState extends State<LoginPage> {
       appBar: AppBar(
         backgroundColor: Colors.white,
         elevation: 0, // No shadow
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.black),
-          onPressed: () {
-            // Handle back button press
-            // This might pop back to a previous screen if there is one
-            // or do nothing if this is the root.
-            Navigator.pop(context);
-          },
-        ),
         title: const Text(
           'Driver Login',
           style: TextStyle(
@@ -275,36 +266,7 @@ class _LoginPageState extends State<LoginPage> {
               const SizedBox(height: 25),
 
               // Continue with Google Button
-              SizedBox(
-                width: double.infinity,
-                height: 55,
-                child: OutlinedButton.icon(
-                  onPressed: () {
-                    // Handle Google login logic
-                    print('Continue with Google tapped');
-                  },
-                  style: OutlinedButton.styleFrom(
-                    foregroundColor: Colors.black87,
-                    side: BorderSide(color: Colors.grey.shade300, width: 1.5),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
-                    ),
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                  ),
-                  icon: const FaIcon(
-                    FontAwesomeIcons.google, // Google icon from Font Awesome
-                    size: 24,
-                    color: Colors.blueGrey, // Adjusted color
-                  ),
-                  label: const Text(
-                    'Continue with Google',
-                    style: TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-              ),
+
 
               const SizedBox(height: 40), // Spacing before bottom nav bar area
             ],

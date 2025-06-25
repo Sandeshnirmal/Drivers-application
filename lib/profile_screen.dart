@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'overview_screen.dart'; // Import the OverviewScreen
 import 'sales_cash_report_screen.dart'; // Import the SalesCashReportScreen'
 import 'drive_status_screen.dart';
+import 'settings_screen.dart'; // Import SettingsScreen (adjust path if needed)
+import 'deductions_screen.dart';
+import 'edit_profile_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
@@ -15,7 +18,11 @@ class ProfileScreen extends StatelessWidget {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context); // Go back
+            Navigator
+                .pushReplacement( // Use pushReplacement to prevent going back
+              context,
+              MaterialPageRoute(builder: (context) => const OverviewScreen()),
+            );
           },
         ),
         title: const Text(
@@ -29,11 +36,12 @@ class ProfileScreen extends StatelessWidget {
         centerTitle: true,
         actions: [
           IconButton(
-            icon: const Icon(Icons.person, color: Colors.black),
+            icon: const Icon(Icons.settings, color: Colors.black),
             onPressed: () {
-              // Handle profile icon tap
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(content: Text('Profile icon tapped!')),
+              // Navigate to the SettingsScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
               );
             },
           ),
@@ -79,9 +87,9 @@ class ProfileScreen extends StatelessWidget {
               width: 120, // Specific width for the button from image
               child: ElevatedButton(
                 onPressed: () {
-                  // Handle Edit button tap
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Edit button tapped!')),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const EditProfileScreen()),
                   );
                 },
                 style: ElevatedButton.styleFrom(
@@ -254,8 +262,9 @@ class ProfileScreen extends StatelessWidget {
               height: 55,
               child: ElevatedButton(
                 onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(content: Text('Save Changes tapped!')),
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DeductionsScreen()),
                   );
                   // Implement save changes logic here
                 },
@@ -267,7 +276,7 @@ class ProfileScreen extends StatelessWidget {
                   elevation: 5,
                 ),
                 child: const Text(
-                  'Save Changes',
+                  'Deductions',
                   style: TextStyle(
                     fontSize: 18,
                     fontWeight: FontWeight.bold,

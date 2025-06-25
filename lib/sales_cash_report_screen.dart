@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'overview_screen.dart'; // Import the OverviewScreen
 import 'profile_screen.dart'; // Import the ProfileScreen'
 import 'drive_status_screen.dart';
+import 'settings_screen.dart'; //
 
 class SalesCashReportScreen extends StatelessWidget {
   const SalesCashReportScreen({super.key});
@@ -12,6 +13,16 @@ class SalesCashReportScreen extends StatelessWidget {
       appBar: AppBar(
         backgroundColor: const Color(0xFFF8F4F2), // Matches background
         elevation: 0, // No shadow
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.black),
+          onPressed: () {
+            Navigator
+                .pushReplacement( // Use pushReplacement to prevent going back
+              context,
+              MaterialPageRoute(builder: (context) => const OverviewScreen()),
+            );
+          },
+        ),
         title: const Text(
           'Sales Cash Report',
           style: TextStyle(
@@ -21,6 +32,20 @@ class SalesCashReportScreen extends StatelessWidget {
           ),
         ),
         centerTitle: true,
+        actions: [
+          // Added Settings Icon to AppBar actions
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.black),
+            onPressed: () {
+              // Navigate to the SettingsScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
+          // You can add other action buttons here if needed
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),

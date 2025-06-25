@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'profile_screen.dart'; // Import the profile screen
 import 'sales_cash_report_screen.dart';
 import 'drive_status_screen.dart';
+import 'settings_screen.dart'; // Import SettingsScreen (adjust path if needed)
+
 
 // Overview Screen Widget (Moved from main.dart)
 class OverviewScreen extends StatelessWidget {
@@ -11,16 +13,24 @@ class OverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        leading: IconButton(
-          icon: const Icon(Icons.menu), // Burger menu icon
-          onPressed: () {
-            // Handle menu button press
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Menu button tapped!')),
-            );
-          },
-        ),
+        backgroundColor: const Color(0xFFF8F4F2), // Matches background
+        foregroundColor: Colors.black, // Dark text/icons for app bar
+        elevation: 0, // No shadow
         title: const Text('Overview'),
+        actions: [
+          // Added Settings Icon to AppBar actions
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.black),
+            onPressed: () {
+              // Navigate to the SettingsScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
+          // You can add other action buttons here if needed
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(20.0),
@@ -170,19 +180,19 @@ class OverviewScreen extends StatelessWidget {
           // Handle navigation here
           switch (index) {
             case 0:
-              // Navigate to Home or stay on OverviewScreen
+            // Navigate to Home or stay on OverviewScreen
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text('Tapped on Home!')),
               );
               break;
             case 1:
-              // Navigate to Earnings screen (not implemented)
-                  Navigator
-                      .pushReplacement( // Use pushReplacement to prevent going back
-                    context,
-                    MaterialPageRoute(builder: (context) => const SalesCashReportScreen()),
-                  );
-                  break;
+            // Navigate to Earnings screen (not implemented)
+              Navigator
+                  .pushReplacement( // Use pushReplacement to prevent going back
+                context,
+                MaterialPageRoute(builder: (context) => const SalesCashReportScreen()),
+              );
+              break;
             case 2:
             // Navigate to Account/Profile screen
               Navigator.pushReplacement( // Use pushReplacement to prevent going back
@@ -191,7 +201,7 @@ class OverviewScreen extends StatelessWidget {
               );
               break;
             case 3:
-              // Navigate to Add screen (not implemented
+            // Navigate to Add screen (not implemented
               Navigator.pushReplacement( // Use pushReplacement to prevent going back
                 context,
                 MaterialPageRoute(builder: (context) => const ProfileScreen()),
@@ -254,4 +264,3 @@ class OverviewCard extends StatelessWidget {
     );
   }
 }
-

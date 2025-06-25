@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'overview_screen.dart'; // Import the OverviewScreen
 import 'sales_cash_report_screen.dart'; // Import the SalesCashReportScreen'
 import 'profile_screen.dart'; // Import the profile screen
+import 'settings_screen.dart'; // Import SettingsScreen (adjust path if needed)
+
+
 
 class DriveStatusScreen extends StatefulWidget {
   const DriveStatusScreen({super.key});
@@ -24,7 +27,11 @@ class _DriveStatusScreenState extends State<DriveStatusScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.black),
           onPressed: () {
-            Navigator.pop(context); // Go back
+            Navigator
+                .pushReplacement( // Use pushReplacement to prevent going back
+              context,
+              MaterialPageRoute(builder: (context) => const OverviewScreen()),
+            );
           },
         ),
         title: const Text(
@@ -36,6 +43,20 @@ class _DriveStatusScreenState extends State<DriveStatusScreen> {
           ),
         ),
         centerTitle: true,
+        actions: [
+          // Added Settings Icon to AppBar actions
+          IconButton(
+            icon: const Icon(Icons.settings, color: Colors.black),
+            onPressed: () {
+              // Navigate to the SettingsScreen
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => const SettingsScreen()),
+              );
+            },
+          ),
+          // You can add other action buttons here if needed
+        ],
       ),
       body: SingleChildScrollView(
         padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10.0),
