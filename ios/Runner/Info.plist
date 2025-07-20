@@ -45,5 +45,15 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+
+	<!-- Camera permissions -->
+	<key>NSCameraUsageDescription</key>
+	<string>This app needs access to camera to capture attendance photos</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to photo library to save attendance photos</string>
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs location access to verify attendance location</string>
+	<key>NSLocationAlwaysAndWhenInUseUsageDescription</key>
+	<string>This app needs location access to verify attendance location</string>
 </dict>
 </plist>

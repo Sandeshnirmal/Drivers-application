@@ -1,53 +1,113 @@
 import 'package:flutter/material.dart';
+import 'models/driver_profile_model.dart';
+import 'services/api_service.dart';
+import 'services/auth_service.dart';
+import 'services/translation_service.dart';
 
 class EditProfileScreen extends StatefulWidget {
-  // You might want to pass initial data to this screen from the ProfileScreen
-  // For simplicity, we'll use static initial values for now.
-  const EditProfileScreen({super.key});
+  final DriverProfile? driverProfile;
+
+  const EditProfileScreen({super.key, this.driverProfile});
 
   @override
   State<EditProfileScreen> createState() => _EditProfileScreenState();
 }
 
 class _EditProfileScreenState extends State<EditProfileScreen> {
+  final ApiService _apiService = ApiService();
+  final AuthService _authService = AuthService();
+  final TranslationService _translationService = TranslationService();
+
   // Controllers for text fields
-  final TextEditingController _nameController = TextEditingController(text: 'Lucas Bennett');
-  final TextEditingController _emailController = TextEditingController(text: 'lucas.bennett@email.com');
-  final TextEditingController _phoneController = TextEditingController(text: '(555) 987-6543');
-  final TextEditingController _vehicleMakeController = TextEditingController(text: 'Honda');
-  final TextEditingController _vehicleModelController = TextEditingController(text: 'Civic');
-  final TextEditingController _vehicleYearController = TextEditingController(text: '2018');
-  final TextEditingController _licensePlateController = TextEditingController(text: 'XYZ-5678');
+  late final TextEditingController _nameController;
+  late final TextEditingController _phoneController;
+  late final TextEditingController _iqamaController;
+  late final TextEditingController _cityController;
+  late final TextEditingController _nationalityController;
+
+  bool _isLoading = false;
+  String? _errorMessage;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize controllers with current profile data
+    _nameController = TextEditingController(
+      text: widget.driverProfile?.driverName ?? ''
+    );
+    _phoneController = TextEditingController(
+      text: widget.driverProfile?.mobile ?? ''
+    );
+    _iqamaController = TextEditingController(
+      text: widget.driverProfile?.iqama ?? ''
+    );
+    _cityController = TextEditingController(
+      text: widget.driverProfile?.city ?? ''
+    );
+    _nationalityController = TextEditingController(
+      text: widget.driverProfile?.nationality ?? ''
+    );
+  }
 
   @override
   void dispose() {
     // Dispose controllers to prevent memory leaks
     _nameController.dispose();
-    _emailController.dispose();
     _phoneController.dispose();
-    _vehicleMakeController.dispose();
-    _vehicleModelController.dispose();
-    _vehicleYearController.dispose();
-    _licensePlateController.dispose();
+    _iqamaController.dispose();
+    _cityController.dispose();
+    _nationalityController.dispose();
     super.dispose();
   }
 
-  void _saveChanges() {
-    // In a real application, you would send this data to a backend or save it locally.
-    print('Saving Changes:');
-    print('Name: ${_nameController.text}');
-    print('Email: ${_emailController.text}');
-    print('Phone: ${_phoneController.text}');
-    print('Vehicle Make: ${_vehicleMakeController.text}');
-    print('Vehicle Model: ${_vehicleModelController.text}');
-    print('Vehicle Year: ${_vehicleYearController.text}');
-    print('License Plate: ${_licensePlateController.text}');
+  Future<void> _saveChanges() async {
+    if (!_authService.isAuthenticated || _authService.currentDriver == null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Please login to update profile')),
+      );
+      return;
+    }
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Profile updated successfully!')),
-    );
-    // Optionally, navigate back to the profile screen
-    Navigator.pop(context);
+    setState(() {
+      _isLoading = true;
+      _errorMessage = null;
+    });
+
+    try {
+      final driverId = _authService.currentDriver!.id;
+      final updateData = {
+        'driver_name': _nameController.text.trim(),
+        'mobile': _phoneController.text.trim(),
+        'iqama': _iqamaController.text.trim(),
+        'city': _cityController.text.trim(),
+        'nationality': _nationalityController.text.trim(),
+      };
+
+      final response = await _apiService.updateDriverProfile(driverId, updateData);
+
+      if (response.isSuccess) {
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Profile updated successfully!')),
+          );
+          Navigator.pop(context, true); // Return true to indicate success
+        }
+      } else {
+        setState(() {
+          _errorMessage = response.error ?? 'Failed to update profile';
+        });
+      }
+    } catch (e) {
+      setState(() {
+        _errorMessage = 'Error updating profile: $e';
+      });
+    } finally {
+      if (mounted) {
+        setState(() {
+          _isLoading = false;
+        });
+      }
+    }
   }
 
   @override
@@ -100,25 +160,32 @@ class _EditProfileScreenState extends State<EditProfileScreen> {
               ),
             ),
             const SizedBox(height: 15),
-            _buildTextField(controller: _nameController, label: 'Name', icon: Icons.person_outline),
-            _buildTextField(controller: _emailController, label: 'Email', icon: Icons.email_outlined, keyboardType: TextInputType.emailAddress),
-            _buildTextField(controller: _phoneController, label: 'Phone Number', icon: Icons.phone_outlined, keyboardType: TextInputType.phone),
-            const SizedBox(height: 30),
-
-            // Vehicle Information Fields
-            Text(
-              'Vehicle Information',
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.bold,
-                color: Colors.grey[800],
-              ),
+            _buildTextField(
+              controller: _nameController,
+              label: _translationService.translate('name'),
+              icon: Icons.person_outline
             ),
-            const SizedBox(height: 15),
-            _buildTextField(controller: _vehicleMakeController, label: 'Vehicle Make', icon: Icons.directions_car_outlined),
-            _buildTextField(controller: _vehicleModelController, label: 'Vehicle Model', icon: Icons.car_rental_outlined),
-            _buildTextField(controller: _vehicleYearController, label: 'Vehicle Year', icon: Icons.calendar_today_outlined, keyboardType: TextInputType.number),
-            _buildTextField(controller: _licensePlateController, label: 'License Plate', icon: Icons.numbers_outlined),
+            _buildTextField(
+              controller: _phoneController,
+              label: _translationService.translate('phone_number'),
+              icon: Icons.phone_outlined,
+              keyboardType: TextInputType.phone
+            ),
+            _buildTextField(
+              controller: _iqamaController,
+              label: _translationService.translate('iqama'),
+              icon: Icons.badge_outlined
+            ),
+            _buildTextField(
+              controller: _cityController,
+              label: _translationService.translate('city'),
+              icon: Icons.location_city_outlined
+            ),
+            _buildTextField(
+              controller: _nationalityController,
+              label: _translationService.translate('nationality'),
+              icon: Icons.flag_outlined
+            ),
             const SizedBox(height: 40),
 
             // Save Changes Button
